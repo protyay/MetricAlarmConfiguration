@@ -9,6 +9,7 @@ export type MetricInfo = {
       comparisonOperator: ComparisonOperator;
       treatMissingDataOverride: TreatMissingData;
     };
+    // Sev3 is marked as mandatory.
     [Severity.SEV3]: {
       threshold: number;
       comparisonOperator: ComparisonOperator;
@@ -21,12 +22,12 @@ function buildMetricAndAlarm(applicableMetrics: MetricInfo[]): CustomMetric[] {
   const metrics: CustomMetric[] = [];
   applicableMetrics.forEach((applicationMetric) => {
     const metric = new Metric({
-      namespace: ServiceConstants.SERVICE_NAME,
+      namespace: YOUR_SERVICE_NAME,
       metricName: applicationMetric.metricName,
       unit: applicationMetric.metricUnit,
       statistic: applicationMetric.metricStats,
       dimensionsMap: {
-        Operation: MonitoringConstants.OPERATION_NAME,
+        Operation: YOUR_OPERATION_NAME,
       },
     });
 
@@ -35,7 +36,7 @@ function buildMetricAndAlarm(applicableMetrics: MetricInfo[]): CustomMetric[] {
       alarmFriendlyName: applicationMetric.alarmFriendlyName,
       addAlarm: {},
     };
-
+    
     if (applicationMetric.alarmConfig && applicationMetric.alarmConfig[Severity.SEV3]) {
       metricItem.addAlarm = {
         Warning: applicationMetric.alarmConfig[Severity.SEV3],
